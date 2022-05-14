@@ -5,6 +5,7 @@
 #include <stdlib.h>
 #include "Obiect.h"
 #include "Pamant.h"
+#include <cstring>
 
 #define _USE_MATH_DEFINES
 #include <math.h>
@@ -26,8 +27,9 @@ Lac* lac;
 
 void construiesteScena() {
 	gameCamera = new Camera(0, 20, 0, 0, 0);
-	pamant = new Pamant(-500, 0, -500, 1000, 1000);
-	lac = new Lac({0, 0.1f, 0}, 200, { 13, 51, 128 });
+	lac = new Lac({ 0, 0, 0 }, 200, { 13, 51, 128 });
+	pamant = new Pamant(-500, 0, -500, 1000, 1000, lac->getLakeSpline());
+	
 }
 
 
@@ -37,13 +39,16 @@ void init(void)
 	glMatrixMode(GL_PROJECTION);
 	//glOrtho(-20.0, 1500, 0.0, 900.0, -1.0, 1.0);
 
-	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	
 	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	glEnable(GL_LINE_SMOOTH);
+	glShadeModel(GL_FLAT);
 
 	construiesteScena();
 
 	glEnable(GL_TEXTURE_2D);
+	glEnable(GL_DEPTH_TEST);
 
 }
 
@@ -67,7 +72,7 @@ void changeSize(int w, int h)
 	glViewport(0, 0, w, h);
 
 	// Set the correct perspective.
-	gluPerspective(45.0f, ratio, 0.1f, 300.0f);
+	gluPerspective(45.0f, ratio, 0.1f, 500.0f);
 
 	// Get Back to the Modelview
 	glMatrixMode(GL_MODELVIEW);
@@ -101,17 +106,27 @@ void renderScene(void) {
 
 void keyUp(uc key, int xx, int yy)
 {
-	activeKeys.erase(remove(activeKeys.begin(), activeKeys.end(), key));
+	if (isalnum(key))
+	{
+		activeKeys.erase(remove(activeKeys.begin(), activeKeys.end(), key));
+	}
 }
 
 void keyDown(uc key, int xx, int yy)
 {
-	activeKeys.push_back(key);
+	if (isalnum(key))
+	{
+		activeKeys.push_back(tolower(key));
+	}
 }
 
 bool isKeyPressed(uc key)
 {
-	return find(activeKeys.begin(), activeKeys.end(), key) != activeKeys.end();
+	if (isalnum(key))
+	{
+		return find(activeKeys.begin(), activeKeys.end(), key) != activeKeys.end();
+	}
+	return false;
 }
 
 void updateLogic()
@@ -131,6 +146,14 @@ void updateLogic()
 	if (isKeyPressed('d'))
 	{
 		gameCamera->panCamera(0.1f * deltaTime);
+	}
+	if (isKeyPressed('p'))
+	{
+		gameCamera->tiltCamera(0.001f * deltaTime);
+	}
+	if (isKeyPressed('l'))
+	{
+		gameCamera->tiltCamera(-0.001f * deltaTime);
 	}
 	if (isKeyPressed(27))
 	{

@@ -40,6 +40,11 @@ struct Point3D {
 	glf x, y, z;
 };
 
+glf mat_solid[] = { 0.75, 0.75, 0.0, 1.0 };
+glf mat_zero[] = { 0.0, 0.0, 0.0, 1.0 };
+glf mat_transparent[] = { 0.0, 0.8, 0.8, 0.6 };
+glf mat_emission[] = { 0.0, 0.3, 0.3, 0.6 };
+
 
 class Obiect {
 protected:
