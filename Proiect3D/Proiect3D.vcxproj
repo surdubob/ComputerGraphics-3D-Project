@@ -148,6 +148,8 @@
     <ClCompile Include="Proiect3D.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Bezier.h" />
+    <ClInclude Include="Camera.h" />
     <ClInclude Include="Obiect.h" />
     <ClInclude Include="Pamant.h" />
     <ClInclude Include="Lac.h" />

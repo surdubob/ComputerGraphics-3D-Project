@@ -15,6 +15,8 @@ private:
 
 	Texture *texture;
 
+
+
 public:
 
 	Pamant(glf x, glf y, glf z, glf sizeX, glf sizeZ) : Obiect(x, y, z) {

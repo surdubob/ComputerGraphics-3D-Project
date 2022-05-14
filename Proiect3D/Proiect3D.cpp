@@ -9,25 +9,25 @@
 #define _USE_MATH_DEFINES
 #include <math.h>
 
+#include "Camera.h"
 #include "Lac.h"
 
 using namespace std;
 
-// angle of rotation for the camera direction
-float angle = M_PI / 2;
-// actual vector representing the camera's direction
-float lx = sin(angle), lz = -cos(angle);
-// XZ position of the camera
-float x = -60.0f, z = 0.0f;
+float deltaTime = 0.0f;	// Time between current frame and last frame
+float lastFrame = 0.0f;
 
+vector<uc> activeKeys;
 
+Camera* gameCamera;
 
 Pamant* pamant;
 Lac* lac;
 
 void construiesteScena() {
+	gameCamera = new Camera(0, 20, 0, 0, 0);
 	pamant = new Pamant(-500, 0, -500, 1000, 1000);
-	lac = new Lac({0, 0.1f, 0}, 20, { 51, 51, 255 });
+	lac = new Lac({0, 0.1f, 0}, 200, { 13, 51, 128 });
 }
 
 
@@ -74,17 +74,6 @@ void changeSize(int w, int h)
 }
 
 
-void drawSnowMan() {
-
-	glColor3f(0, 0, 0);
-
-	// Draw Body
-	glTranslatef(0.0f, 0.75f, 0.0f);
-	glutSolidSphere(0.5f, 20, 20);
-
-}
-
-
 
 void renderScene(void) {
 
@@ -94,65 +83,62 @@ void renderScene(void) {
 
 	// Reset transformations
 	glLoadIdentity();
-	// Set the camera
-	gluLookAt(x, 20.0f, z,
-		x + lx, 20.0f, z + lz,
-		0.0f, 1.0f, 0.0f);
+
+	gameCamera->update();
 
 	pamant->render();
 	lac->render();
 
-	// Draw 36 SnowMen
-	for (int i = 0; i < 3; i++)
-		for (int j = 0; j < 3; j++) {
-			glPushMatrix();
-			glTranslatef(i * 10.0, 0, j * 10.0);
-			drawSnowMan();
-			glPopMatrix();
-		}
+
 
 	glutSwapBuffers();
+
+	float currentFrame = glutGet(GLUT_ELAPSED_TIME);
+	deltaTime = currentFrame - lastFrame;
+	lastFrame = currentFrame;
 }
 
-void processNormalKeys(unsigned char key, int x, int y)
+
+void keyUp(uc key, int xx, int yy)
 {
-
-	switch (key) {
-	case 'l':
-		angle -= 0.01f;
-		lx = sin(angle);
-		lz = -cos(angle);
-		break;
-
-	}
-	if (key == 27)
-		exit(0);
+	activeKeys.erase(remove(activeKeys.begin(), activeKeys.end(), key));
 }
 
-void processSpecialKeys(int key, int xx, int yy) {
+void keyDown(uc key, int xx, int yy)
+{
+	activeKeys.push_back(key);
+}
 
-	float fraction = 10.0f;
+bool isKeyPressed(uc key)
+{
+	return find(activeKeys.begin(), activeKeys.end(), key) != activeKeys.end();
+}
 
-	switch (key) {
-	case GLUT_KEY_LEFT:
-		angle -= 0.1f;
-		lx = sin(angle);
-		lz = -cos(angle);
-		break;
-	case GLUT_KEY_RIGHT:
-		angle += 0.1f;
-		lx = sin(angle);
-		lz = -cos(angle);
-		break;
-	case GLUT_KEY_UP:
-		x += lx * fraction;
-		z += lz * fraction;
-		break;
-	case GLUT_KEY_DOWN:
-		x -= lx * fraction;
-		z -= lz * fraction;
-		break;
+void updateLogic()
+{
+	if (isKeyPressed('w'))
+	{
+		gameCamera->moveCamera(0, 10 * deltaTime);
 	}
+	if (isKeyPressed('a'))
+	{
+		gameCamera->panCamera(-0.1f * deltaTime);
+	}
+	if (isKeyPressed('s'))
+	{
+		gameCamera->moveCamera(0, -10 * deltaTime);
+	}
+	if (isKeyPressed('d'))
+	{
+		gameCamera->panCamera(0.1f * deltaTime);
+	}
+	if (isKeyPressed(27))
+	{
+		exit(0);
+	}
+		
+
+	glutPostRedisplay();
 }
 
 
@@ -170,12 +156,14 @@ int main(int argc, char** argv) {
 
 	init();
 
+	glutSetKeyRepeat(GLUT_KEY_REPEAT_OFF);
+
 	// register callbacks
 	glutDisplayFunc(renderScene);
 	glutReshapeFunc(changeSize);
-	glutIdleFunc(renderScene);
-	glutKeyboardFunc(processNormalKeys);
-	glutSpecialFunc(processSpecialKeys);
+	glutIdleFunc(updateLogic);
+	glutKeyboardUpFunc(keyUp);
+	glutKeyboardFunc(keyDown);
 
 	// OpenGL init
 	glEnable(GL_DEPTH_TEST);

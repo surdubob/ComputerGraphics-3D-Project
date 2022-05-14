@@ -25,6 +25,17 @@ void glColor(colortype col) {
 	glColor3ub(col[0], col[1], col[2]);
 }
 
+struct Point {
+	glf x, y;
+
+	Point(){}
+
+	Point(glf ics, glf igrec) : x(ics), y(igrec)
+	{
+		
+	}
+};
+
 struct Point3D {
 	glf x, y, z;
 };
