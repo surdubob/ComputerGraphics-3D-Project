@@ -37,8 +37,8 @@ public:
 
 		if(moveRunning)
 		{
-			_x = _x + ((abs(_x - targetX) / (endTime - startTime)) * cos(_angleX + signZ * M_PI));
-			_z = _z + ((abs(_z - targetZ) / (endTime - startTime)) * sin(_angleX + signZ * M_PI));
+			_x = _x + ((abs(_x - targetX) * 2 / (endTime - startTime)) * cos(_angleX + signZ * M_PI));
+			_z = _z + ((abs(_z - targetZ) * 2 / (endTime - startTime)) * sin(_angleX + signZ * M_PI));
 
 			if (glutGet(GLUT_ELAPSED_TIME) > endTime)
 			{
@@ -48,7 +48,7 @@ public:
 
 		if(panRunning)
 		{
-			_angleX += angleSign * abs(_angleX - targetAngleX) / (angleEndTime - angleStartTime);
+			_angleX += angleSign * 2 * abs(_angleX - targetAngleX) / (angleEndTime - angleStartTime);
 			if (glutGet(GLUT_ELAPSED_TIME) > angleEndTime)
 			{
 				panRunning = false;

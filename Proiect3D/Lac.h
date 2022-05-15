@@ -37,7 +37,7 @@ public:
 
 		glBegin(GL_TRIANGLE_FAN);
 		glVertex3f(_startPos.x, _startPos.y - 40, _startPos.z);
-		for(float t = 0; t <= 1; t += 0.005)
+		for(float t = 0; t <= 1; t += 0.01)
 		{
 			vec3 pct = spline->GetInterpolatedSplinePoint(t);
 			glVertex3f(pct.x, pct.y, pct.z);

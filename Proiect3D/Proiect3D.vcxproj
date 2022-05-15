@@ -150,6 +150,8 @@
   <ItemGroup>
     <ClInclude Include="Bezier.h" />
     <ClInclude Include="Camera.h" />
+    <ClInclude Include="Copac.h" />
+    <ClInclude Include="Munte.h" />
     <ClInclude Include="Obiect.h" />
     <ClInclude Include="Pamant.h" />
     <ClInclude Include="Lac.h" />

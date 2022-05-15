@@ -11,7 +11,9 @@
 #include <math.h>
 
 #include "Camera.h"
+#include "Copac.h"
 #include "Lac.h"
+#include "Munte.h"
 
 using namespace std;
 
@@ -25,11 +27,32 @@ Camera* gameCamera;
 Pamant* pamant;
 Lac* lac;
 
+vector<Munte*> munti;
+
+vector<Copac*> copaci;
+
 void construiesteScena() {
 	gameCamera = new Camera(0, 20, 0, 0, 0);
 	lac = new Lac({ 0, 0, 0 }, 200, { 13, 51, 128 });
-	pamant = new Pamant(-500, 0, -500, 1000, 1000, lac->getLakeSpline());
+	pamant = new Pamant(-1000, 0, -1000, 2000, 2000, lac->getLakeSpline());
+
+	for (glf i = 0; i <= 2 * M_PI; i += 0.2)
+	{
+		munti.push_back(new Munte(1000 * cos(i), 0, 1000 * sin(i), 1, 200, 300, { 255, 255, 255 }, -i * 180 / M_PI));
+	}
+
+	for(glf i = 0; i <= 2 * M_PI; i += 0.6)
+	{
+		munti.push_back(new Munte(800 * cos(i), 0, 800 * sin(i), 100, 200, 300, { 255, 255, 255 }, -i * 180 / M_PI));
+	}
+
+	for(glf i = 0; i <= 2 * M_PI; i += 0.15)
+	{
+		copaci.push_back(new Copac((500 + rand() % 200) * cos(i), 0, (500 + rand() % 200) * sin(i)));
+	}
 	
+
+
 }
 
 
@@ -72,7 +95,7 @@ void changeSize(int w, int h)
 	glViewport(0, 0, w, h);
 
 	// Set the correct perspective.
-	gluPerspective(45.0f, ratio, 0.1f, 500.0f);
+	gluPerspective(45.0f, ratio, 0.1f, 1500.0f);
 
 	// Get Back to the Modelview
 	glMatrixMode(GL_MODELVIEW);
@@ -94,6 +117,14 @@ void renderScene(void) {
 	pamant->render();
 	lac->render();
 
+	for(int i = 0 ; i < munti.size(); i++)
+	{
+		munti[i]->render();
+	}
+	for (int i = 0; i < copaci.size(); i++)
+	{
+		copaci[i]->render();
+	}
 
 
 	glutSwapBuffers();
@@ -133,7 +164,7 @@ void updateLogic()
 {
 	if (isKeyPressed('w'))
 	{
-		gameCamera->moveCamera(0, 10 * deltaTime);
+		gameCamera->moveCamera(0, 2 * deltaTime);
 	}
 	if (isKeyPressed('a'))
 	{
@@ -141,7 +172,7 @@ void updateLogic()
 	}
 	if (isKeyPressed('s'))
 	{
-		gameCamera->moveCamera(0, -10 * deltaTime);
+		gameCamera->moveCamera(0, -2 * deltaTime);
 	}
 	if (isKeyPressed('d'))
 	{
@@ -173,7 +204,7 @@ int main(int argc, char** argv) {
 
 	glutInit(&argc, argv);
 	glutInitDisplayMode(GLUT_DEPTH | GLUT_DOUBLE | GLUT_RGBA);
-	glutInitWindowPosition(100, 100);
+	glutInitWindowPosition(0, 0);
 	glutInitWindowSize(1600, 900);
 	glutCreateWindow("Proiect 3D - Pe balta cu FMI");
 
