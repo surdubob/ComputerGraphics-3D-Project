@@ -29,7 +29,10 @@ public:
 	{
 		glColor(_color);
 
-		glDepthMask(GL_FALSE);
+		GLfloat amb[] = { 0.1f, 0.3f, 0.15f, 1.0f };
+		GLfloat diff[] = { 0.1f, 0.4f, 0.15f, 1.0f };
+		GLfloat spec[] = { 0.0f, 0.0f, 0.0f, 1.0f };
+		setMaterialProperties(amb, diff, spec);
 
 		glEnable(GL_BLEND);
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);

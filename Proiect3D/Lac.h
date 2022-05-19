@@ -5,6 +5,7 @@
 #define _USE_MATH_DEFINES
 #include <math.h>
 #include "Bezier.h"
+#include "Light.h"
 
 class Lac : public Obiect
 {
@@ -24,9 +25,9 @@ public:
 
 		spline = new CRSpline();
 
-		for (float i = 0; i < 2 * M_PI; i += 0.4)
+		for (float i = 0; i <= 2 * M_PI; i += 0.2)
 		{
-			spline->AddSplinePoint({ _startPos.x + cos(i) * _meanRadius + (cos(i) * _meanRadius * (rand() % 100) / 100), _startPos.y, _startPos.z + sin(i) * _meanRadius + (sin(i) * _meanRadius * (rand() % 100) / 100) });
+			spline->AddSplinePoint({ _startPos.x + cos(i) * _meanRadius + (cos(i) * _meanRadius * (rand() % 100) / 400), _startPos.y, _startPos.z + sin(i) * _meanRadius + (sin(i) * _meanRadius * (rand() % 100) / 400) });
 		}
 		spline->AddSplinePoint(spline->GetNthPoint(0));
 	}
@@ -35,8 +36,13 @@ public:
 	{
 		glColor(_color);
 
+		GLfloat amb[] = { 0.0f, 0.1f, 0.4f, 1.0f };
+		GLfloat diff[] = { 0.0f, 0.05f, 0.8f, 1.0f };
+		GLfloat spec[] = { 0.0f, 0.0f, 0.4f, 1.0f };
+		setMaterialProperties(amb,diff, spec);
+		glMaterialf(GL_FRONT_AND_BACK, GL_SHININESS, 60);
 		glBegin(GL_TRIANGLE_FAN);
-		glVertex3f(_startPos.x, _startPos.y - 40, _startPos.z);
+		glVertex3f(_startPos.x, _startPos.y - 80, _startPos.z);
 		for(float t = 0; t <= 1; t += 0.01)
 		{
 			vec3 pct = spline->GetInterpolatedSplinePoint(t);
@@ -44,25 +50,26 @@ public:
 		}
 
 		glEnd();
-
-		/*glMaterialfv(GL_FRONT, GL_DIFFUSE, mat_transparent);
+		
+		glMaterialfv(GL_FRONT, GL_DIFFUSE, mat_transparent);
 
 		glEnable(GL_BLEND);
 		glDepthMask(GL_FALSE);
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-		glColor(0, 153, 255, 20);
 		glBegin(GL_TRIANGLE_FAN);
 		glVertex3f(_startPos.x, _startPos.y, _startPos.z);
-		for (float t = 0; t <= 1; t += 0.005)
+		for (float t = 0; t <= 1; t += 0.001)
 		{
 			vec3 pct = spline->GetInterpolatedSplinePoint(t);
 			glVertex3f(pct.x, pct.y, pct.z);
 		}
+		vec3 pct = spline->GetNthPoint(0);
+		glVertex3f(pct.x, pct.y, pct.z);
 		glEnd();
 
 		glDepthMask(GL_TRUE);
-		glDisable(GL_BLEND);*/
+		glDisable(GL_BLEND);
 
 		/*glColor(0, 0, 0);
 		glLineWidth(1);

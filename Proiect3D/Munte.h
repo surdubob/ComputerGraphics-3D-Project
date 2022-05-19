@@ -27,6 +27,10 @@ public:
 	{
 		glColor(_color);
 
+		GLfloat amb[] = { 0.2f, 0.4f, 0.4f, 1.0f };
+		GLfloat diff[] = { 0.4f, 0.6f, 1.6f, 1.0f };
+		GLfloat spec[] = { 0.3f, 0.3f, 0.3f, 1.0f };
+		setMaterialProperties(amb, diff, spec);
 		texture->bind();
 
 		glDepthMask(GL_FALSE);

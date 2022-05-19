@@ -8,6 +8,8 @@
 #include "Obiect.h"
 #include "Texture.h"
 #include <ctype.h>
+
+#include "Light.h"
 using namespace std;
 
 
@@ -80,8 +82,13 @@ public:
 
 	void render() {
 		glColor(_color);
+		GLfloat amb[] = { 0.0f, 0.3f, 0.1f, 1.0f };
+		GLfloat diff[] = { 0.0f, 0.6f, 0.2f, 1.0f };
+		GLfloat spec[] = { 0.0f, 0.0f, 0.0f, 1.0f };
 
-
+		setMaterialProperties(amb, diff, spec);
+		// glMaterialf(GL_FRONT_AND_BACK, GL_SHININESS, 0.4f);
+		glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
 		texture->bind();
 		glBegin(GL_QUADS);
 

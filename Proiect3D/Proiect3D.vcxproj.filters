@@ -44,5 +44,17 @@
     <ClInclude Include="Copac.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Peste.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Soare.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Light.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Iarba.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

@@ -4,8 +4,10 @@
 #ifndef _OBIECT_H_
 #define _OBIECT_H_
 
-#include<gl/freeglut.h>
+#include <gl/freeglut.h>
 #include <vector>
+#define _USE_MATH_DEFINES
+#include <math.h>
 
 using namespace std;
 
@@ -25,6 +27,17 @@ void glColor(colortype col) {
 	glColor3ub(col[0], col[1], col[2]);
 }
 
+GLfloat DefaultAmbient[] = { 0.2f, 0.2f, 0.2f, 1.0f };
+GLfloat DefaultDiffuse[] = { 0.6f, 0.6f, 0.6f, 1.0f };
+GLfloat DefaultSpecular[] = { 0.2f, 0.2f, 0.2f, 1.0f };
+
+void setMaterialProperties(GLfloat ambient[4],GLfloat diffuse[4], GLfloat specular[4])
+{
+	glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, ambient);
+	glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, diffuse);
+	glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, specular);
+}
+
 struct Point {
 	glf x, y;
 
@@ -40,11 +53,16 @@ struct Point3D {
 	glf x, y, z;
 };
 
-glf mat_solid[] = { 0.75, 0.75, 0.0, 1.0 };
-glf mat_zero[] = { 0.0, 0.0, 0.0, 1.0 };
-glf mat_transparent[] = { 0.0, 0.8, 0.8, 0.6 };
-glf mat_emission[] = { 0.0, 0.3, 0.3, 0.6 };
+glf mat_solid[] = { 0.75f, 0.75f, 0.0f, 1.0f };
+glf mat_zero[] = { 0.0f, 0.0f, 0.0f, 1.0f };
+glf mat_transparent[] = { 0.0f, 0.8f, 0.8f, 0.4f };
+glf mat_emission[] = { 0.0f, 0.3f, 0.3f, 0.6f };
 
+
+glf degreesToRadians(glf degrees)
+{
+	return degrees * (float)M_PI / 180.0f;
+}
 
 class Obiect {
 protected:

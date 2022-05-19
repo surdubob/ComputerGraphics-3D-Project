@@ -12,8 +12,12 @@
 
 #include "Camera.h"
 #include "Copac.h"
+#include "Iarba.h"
 #include "Lac.h"
+#include "Light.h"
 #include "Munte.h"
+#include "Peste.h"
+#include "Soare.h"
 
 using namespace std;
 
@@ -26,15 +30,21 @@ Camera* gameCamera;
 
 Pamant* pamant;
 Lac* lac;
+Soare* soare;
 
 vector<Munte*> munti;
 
 vector<Copac*> copaci;
+vector<Peste*> pesti;
+Light* g_SunLight, *lumina2, * lumina3, *lumina4;
+
+vector<Iarba*> ierburi;
 
 void construiesteScena() {
 	gameCamera = new Camera(0, 20, 0, 0, 0);
 	lac = new Lac({ 0, 0, 0 }, 200, { 13, 51, 128 });
 	pamant = new Pamant(-1000, 0, -1000, 2000, 2000, lac->getLakeSpline());
+	soare = new Soare({0, 600, 0}, 50);
 
 	for (glf i = 0; i <= 2 * M_PI; i += 0.2)
 	{
@@ -50,9 +60,18 @@ void construiesteScena() {
 	{
 		copaci.push_back(new Copac((500 + rand() % 200) * cos(i), 0, (500 + rand() % 200) * sin(i)));
 	}
-	
 
+	// pesti.push_back(new Peste({30, 0, 0}, 20, 0, 0.1, {200, 150, 150}));
 
+	g_SunLight = new Light(GL_LIGHT0, color4(0.2, 0.2, 0.2, 1), color4(0.8, 0.8, 0.8, 1), color4(1, 1, 1, 1), float4(100, 100, 0, 1), float3(1, 0, 0));
+	lumina2 = new Light(GL_LIGHT1, color4(0.2, 0.2, 0.2, 1), color4(0.8, 0.8, 0.8, 1), color4(1, 1, 1, 1), float4(-100, 100, 0, 1), float3(-1, 0, 0));
+	lumina3 = new Light(GL_LIGHT2, color4(0.2, 0.2, 0.2, 1), color4(0.8, 0.8, 0.8, 1), color4(1, 1, 1, 1), float4(0, 100, -100, 1), float3(0, 0, 1));
+	lumina4 = new Light(GL_LIGHT3, color4(0.2, 0.2, 0.2, 1), color4(0.8, 0.8, 0.8, 1), color4(1, 1, 1, 1), float4(0, 100, 100, 1), float3(0, 0, -1));
+	for (int i = 0; i < 8000; i++)
+	{
+		glf randomAngle = degreesToRadians(rand() % 360);
+		ierburi.push_back(new Iarba({250.0f * cos(randomAngle) + (rand() % 200) * cos(randomAngle), 0, 250 * sin(randomAngle) + (rand() % 200) * sin(randomAngle)}, 2 + rand() % 2));
+	}
 }
 
 
@@ -71,8 +90,10 @@ void init(void)
 	construiesteScena();
 
 	glEnable(GL_TEXTURE_2D);
+	glEnable(GL_LIGHTING);
 	glEnable(GL_DEPTH_TEST);
-
+	glShadeModel(GL_SMOOTH);
+	glEnable(GL_NORMALIZE);
 }
 
 
@@ -101,11 +122,7 @@ void changeSize(int w, int h)
 	glMatrixMode(GL_MODELVIEW);
 }
 
-
-
 void renderScene(void) {
-
-	// Clear Color and Depth Buffers
 
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -114,8 +131,16 @@ void renderScene(void) {
 
 	gameCamera->update();
 
+	glEnable(GL_LIGHT0);
+
+	g_SunLight->Activate();
+	lumina2->Activate();
+	lumina3->Activate();
+	lumina4->Activate();
+
 	pamant->render();
-	lac->render();
+	
+	soare->render();
 
 	for(int i = 0 ; i < munti.size(); i++)
 	{
@@ -125,6 +150,17 @@ void renderScene(void) {
 	{
 		copaci[i]->render();
 	}
+	for (int i = 0; i < pesti.size(); i++)
+	{
+		pesti[i]->render();
+	}
+
+	for(int i = 0; i < ierburi.size(); i++)
+	{
+		ierburi[i]->render();
+	}
+
+	lac->render();
 
 
 	glutSwapBuffers();
@@ -145,6 +181,10 @@ void keyUp(uc key, int xx, int yy)
 
 void keyDown(uc key, int xx, int yy)
 {
+	if (key == 27)
+	{
+		exit(0);
+	}
 	if (isalnum(key))
 	{
 		activeKeys.push_back(tolower(key));
@@ -159,6 +199,8 @@ bool isKeyPressed(uc key)
 	}
 	return false;
 }
+
+glf lastFishSpawn = 0;
 
 void updateLogic()
 {
@@ -190,7 +232,26 @@ void updateLogic()
 	{
 		exit(0);
 	}
-		
+
+	if(glutGet(GLUT_ELAPSED_TIME) - lastFishSpawn > 4000)
+	{
+		pesti.push_back(Peste::generateRandomFish());
+		lastFishSpawn = glutGet(GLUT_ELAPSED_TIME);
+	}
+
+	for(int i = 0; i < pesti.size(); i++)
+	{
+		pesti[i]->update();
+		if (abs(pesti[i]->getX()) > 250 || abs(pesti[i]->getY()) > 250)
+		{
+			Peste* p = pesti[i];
+			pesti.erase(pesti.begin() + i);
+			delete p;
+		}
+	}
+
+	
+
 
 	glutPostRedisplay();
 }
