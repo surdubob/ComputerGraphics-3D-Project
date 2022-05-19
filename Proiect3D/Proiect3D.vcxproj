@@ -148,8 +148,10 @@
     <ClCompile Include="Proiect3D.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Barca.h" />
     <ClInclude Include="Bezier.h" />
     <ClInclude Include="Camera.h" />
+    <ClInclude Include="Casa.h" />
     <ClInclude Include="Copac.h" />
     <ClInclude Include="Iarba.h" />
     <ClInclude Include="Light.h" />

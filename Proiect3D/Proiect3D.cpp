@@ -11,6 +11,7 @@
 #include <math.h>
 
 #include "Camera.h"
+#include "Casa.h"
 #include "Copac.h"
 #include "Iarba.h"
 #include "Lac.h"
@@ -39,6 +40,7 @@ vector<Peste*> pesti;
 Light* g_SunLight, *lumina2, * lumina3, *lumina4;
 
 vector<Iarba*> ierburi;
+vector<Casa*> cladiri;
 
 void construiesteScena() {
 	gameCamera = new Camera(0, 20, 0, 0, 0);
@@ -67,11 +69,21 @@ void construiesteScena() {
 	lumina2 = new Light(GL_LIGHT1, color4(0.2, 0.2, 0.2, 1), color4(0.8, 0.8, 0.8, 1), color4(1, 1, 1, 1), float4(-100, 100, 0, 1), float3(-1, 0, 0));
 	lumina3 = new Light(GL_LIGHT2, color4(0.2, 0.2, 0.2, 1), color4(0.8, 0.8, 0.8, 1), color4(1, 1, 1, 1), float4(0, 100, -100, 1), float3(0, 0, 1));
 	lumina4 = new Light(GL_LIGHT3, color4(0.2, 0.2, 0.2, 1), color4(0.8, 0.8, 0.8, 1), color4(1, 1, 1, 1), float4(0, 100, 100, 1), float3(0, 0, -1));
-	for (int i = 0; i < 8000; i++)
+
+	for (int i = 0; i < 80; i++)
 	{
 		glf randomAngle = degreesToRadians(rand() % 360);
-		ierburi.push_back(new Iarba({250.0f * cos(randomAngle) + (rand() % 200) * cos(randomAngle), 0, 250 * sin(randomAngle) + (rand() % 200) * sin(randomAngle)}, 2 + rand() % 2));
+		ierburi.push_back(new Iarba({250.0f * cos(randomAngle) + (rand() % 200) * cos(randomAngle), 0, 250 * sin(randomAngle) + (rand() % 200) * sin(randomAngle)}, 10 + rand() % 5));
 	}
+	sort(ierburi.begin(), ierburi.end(), Iarba::cmp);
+
+	cladiri.push_back(new Casa({350, 0, 0}, 120, 80, 90));
+	cladiri.push_back(new Casa({ -300, 0, 300 }, 160, 100, 30));
+	cladiri.push_back(new Casa({ -350, 0, -300 }, 120, 100, 90));
+	cladiri.push_back(new Casa({ -350, 0, 0 }, 100, 60, 0));
+	cladiri.push_back(new Casa({ 100, 0, 350 }, 120, 100, 0));
+	cladiri.push_back(new Casa({ 200, 0, -350 }, 120, 100, 0));
+	cladiri.push_back(new Casa({ -120, 0, -380 }, 120, 100, 0));
 }
 
 
@@ -141,8 +153,17 @@ void renderScene(void) {
 	pamant->render();
 	
 	soare->render();
+	
+	for (int i = 0; i < pesti.size(); i++)
+	{
+		pesti[i]->render();
+	}
 
-	for(int i = 0 ; i < munti.size(); i++)
+	for (int i = 0; i < cladiri.size(); i++)
+	{
+		cladiri[i]->render();
+	}
+	for (int i = 0; i < munti.size(); i++)
 	{
 		munti[i]->render();
 	}
@@ -150,12 +171,7 @@ void renderScene(void) {
 	{
 		copaci[i]->render();
 	}
-	for (int i = 0; i < pesti.size(); i++)
-	{
-		pesti[i]->render();
-	}
-
-	for(int i = 0; i < ierburi.size(); i++)
+	for (int i = 0; i < ierburi.size(); i++)
 	{
 		ierburi[i]->render();
 	}

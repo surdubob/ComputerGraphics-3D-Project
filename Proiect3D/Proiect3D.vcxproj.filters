@@ -56,5 +56,11 @@
     <ClInclude Include="Iarba.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Casa.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Barca.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
