@@ -25,11 +25,13 @@ public:
 
 		spline = new CRSpline();
 
-		for (float i = 0; i <= 2 * M_PI; i += 0.2)
+		spline->AddSplinePoint({ _startPos.x + _meanRadius, _startPos.y, 0 });
+		// spline->AddSplinePoint({ _startPos.x + _meanRadius + 0.5f, _startPos.y, 0.5 });
+		for (float i = 0.01; i < 2 * M_PI - 0.2; i += 0.1)
 		{
-			spline->AddSplinePoint({ _startPos.x + cos(i) * _meanRadius + (cos(i) * _meanRadius * (rand() % 100) / 400), _startPos.y, _startPos.z + sin(i) * _meanRadius + (sin(i) * _meanRadius * (rand() % 100) / 400) });
+			spline->AddSplinePoint({ _startPos.x + cos(i) * _meanRadius + (cos(i) * _meanRadius * (rand() % 100) / 800), _startPos.y, _startPos.z + sin(i) * _meanRadius + (sin(i) * _meanRadius * (rand() % 100) / 800) });
 		}
-		spline->AddSplinePoint(spline->GetNthPoint(0));
+		// spline->AddSplinePoint(spline->GetNthPoint(1));
 	}
 
 	void render()
@@ -43,31 +45,33 @@ public:
 		glMaterialf(GL_FRONT_AND_BACK, GL_SHININESS, 60);
 		glBegin(GL_TRIANGLE_FAN);
 		glVertex3f(_startPos.x, _startPos.y - 80, _startPos.z);
-		for(float t = 0; t <= 1; t += 0.01)
+		for(float t = 0.02; t < 1 - 0.001; t += 0.005)
 		{
 			vec3 pct = spline->GetInterpolatedSplinePoint(t);
 			glVertex3f(pct.x, pct.y, pct.z);
 		}
+		vec3 pct = spline->GetInterpolatedSplinePoint(0.02);
+		glVertex3f(pct.x, pct.y, pct.z);
 
 		glEnd();
 		
 		glMaterialfv(GL_FRONT, GL_DIFFUSE, mat_transparent);
-
+		
 		glEnable(GL_BLEND);
 		glDepthMask(GL_FALSE);
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
+		
 		glBegin(GL_TRIANGLE_FAN);
 		glVertex3f(_startPos.x, _startPos.y, _startPos.z);
-		for (float t = 0; t <= 1; t += 0.001)
+		for (float t = 0.02; t < 1 - 0.02; t += 0.005)
 		{
 			vec3 pct = spline->GetInterpolatedSplinePoint(t);
 			glVertex3f(pct.x, pct.y, pct.z);
 		}
-		vec3 pct = spline->GetNthPoint(0);
+		pct = spline->GetInterpolatedSplinePoint(0.02);
 		glVertex3f(pct.x, pct.y, pct.z);
 		glEnd();
-
+		
 		glDepthMask(GL_TRUE);
 		glDisable(GL_BLEND);
 

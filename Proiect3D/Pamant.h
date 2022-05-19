@@ -32,7 +32,7 @@ public:
 		texture = new Texture("resources/grass-texture.png");
 		lakeSpline = lake;
 
-		for (float t = 0; t <= 1; t += 0.01)
+		for (float t = 0; t <= 1; t += 0.001)
 		{
 			vec3 pct = lakeSpline->GetInterpolatedSplinePoint(t);
 			if(lakeX > pct.x)
@@ -165,10 +165,13 @@ public:
 		glf step = 0.001;
 		int latestEdge = 1;
 
-		for (glf t = 0; t <= 1; t += step)
+		vec3 firstPoint = lakeSpline->GetInterpolatedSplinePoint(0.02), lastPoint;
+
+		for (glf t = 0.02; t <= 1 - 0.02; t += step)
 		{
 			vec3 pct1 = lakeSpline->GetInterpolatedSplinePoint(t);
 			vec3 pct2 = lakeSpline->GetInterpolatedSplinePoint(t + step);
+			lastPoint = pct2;
 			glColor(_color);
 
 			int edge = closestEdge(pct1);
@@ -255,7 +258,7 @@ public:
 			{
 				if (latestEdge != edge)
 				{
-					int ledge = closestEdge(lakeSpline->GetInterpolatedSplinePoint(t));
+					int ledge = closestEdge(pct1);
 					drawRect(pct1, { lakeMaxX, pct1.y, lakeZ });
 				}
 				latestEdge = 4;
@@ -277,10 +280,38 @@ public:
 				glEnd();
 				texture->unbind();
 			}
-
-			
-
 		}
+
+		// glPushMatrix();
+		// glTranslatef(lakeMaxX, 0, lakeZ);
+		// glutSolidSphere(1, 20, 20);
+		// glPopMatrix();
+		// vec3 pct = lakeSpline->GetInterpolatedSplinePoint(0.92);
+		// cout << pct.x << " " << pct.z << " " << closestEdge(pct) << endl;
+		// glPushMatrix();
+		// glTranslatef(pct.x, 0, pct.z);
+		// glutSolidSphere(1, 20, 20);
+		// glPopMatrix();
+		
+
+		texture->bind();
+		glBegin(GL_QUADS);
+
+		glTexCoord2f(5, 5);
+		glVertex3f(firstPoint.x, firstPoint.y, firstPoint.z);
+
+		glTexCoord2f(5, 0.0);
+		glVertex3f(lakeMaxX, firstPoint.y, firstPoint.z);
+
+		glTexCoord2f(0.0, 0.0);
+		glVertex3f(lakeMaxX, lastPoint.y, lastPoint.z);
+
+		glTexCoord2f(0.0, 5);
+		glVertex3f(lastPoint.x, lastPoint.y, lastPoint.z);
+
+		glEnd();
+		texture->unbind();
+
 
 	}
 
