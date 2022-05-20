@@ -27,6 +27,8 @@ public:
 
 		setMaterialProperties(amb, diff, spec);
 		glPushMatrix();
+		glScalef(0.5, 0.5, 0.5);
+		glPushMatrix();
 		glTranslatef(_position.x, _position.y, _position.z);
 		glPushMatrix();
 		glRotatef(_angle, 0, 1, 0);
@@ -95,6 +97,7 @@ public:
 		glPopMatrix();
 
 		glTranslatef(-_position.x, -_position.y, -_position.z);
+		glPopMatrix();
 		glPopMatrix();
 		glPopMatrix();
 		

@@ -10,6 +10,7 @@
 #define _USE_MATH_DEFINES
 #include <math.h>
 
+#include "Barca.h"
 #include "Camera.h"
 #include "Casa.h"
 #include "Copac.h"
@@ -42,28 +43,29 @@ Light* g_SunLight, *lumina2, * lumina3, *lumina4;
 vector<Iarba*> ierburi;
 vector<Casa*> cladiri;
 
+Barca* barca;
+
 void construiesteScena() {
 	gameCamera = new Camera(0, 20, 0, 0, 0);
 	lac = new Lac({ 0, 0, 0 }, 200, { 13, 51, 128 });
 	pamant = new Pamant(-1000, 0, -1000, 2000, 2000, lac->getLakeSpline());
-	soare = new Soare({0, 600, 0}, 50);
+	soare = new Soare({ 0, 400, 900 }, 40);
 
 	for (glf i = 0; i <= 2 * M_PI; i += 0.2)
 	{
 		munti.push_back(new Munte(1000 * cos(i), 0, 1000 * sin(i), 1, 200, 300, { 255, 255, 255 }, -i * 180 / M_PI));
 	}
 
-	for(glf i = 0; i <= 2 * M_PI; i += 0.6)
+	for (glf i = 0; i <= 2 * M_PI; i += 0.6)
 	{
 		munti.push_back(new Munte(800 * cos(i), 0, 800 * sin(i), 100, 200, 300, { 255, 255, 255 }, -i * 180 / M_PI));
 	}
 
-	for(glf i = 0; i <= 2 * M_PI; i += 0.15)
+	for (glf i = 0; i <= 2 * M_PI; i += 0.15)
 	{
 		copaci.push_back(new Copac((500 + rand() % 200) * cos(i), 0, (500 + rand() % 200) * sin(i)));
 	}
 
-	// pesti.push_back(new Peste({30, 0, 0}, 20, 0, 0.1, {200, 150, 150}));
 
 	g_SunLight = new Light(GL_LIGHT0, color4(0.2, 0.2, 0.2, 1), color4(0.8, 0.8, 0.8, 1), color4(1, 1, 1, 1), float4(100, 100, 0, 1), float3(1, 0, 0));
 	lumina2 = new Light(GL_LIGHT1, color4(0.2, 0.2, 0.2, 1), color4(0.8, 0.8, 0.8, 1), color4(1, 1, 1, 1), float4(-100, 100, 0, 1), float3(-1, 0, 0));
@@ -73,17 +75,18 @@ void construiesteScena() {
 	for (int i = 0; i < 80; i++)
 	{
 		glf randomAngle = degreesToRadians(rand() % 360);
-		ierburi.push_back(new Iarba({250.0f * cos(randomAngle) + (rand() % 200) * cos(randomAngle), 0, 250 * sin(randomAngle) + (rand() % 200) * sin(randomAngle)}, 10 + rand() % 5));
+		ierburi.push_back(new Iarba({ 250.0f * cos(randomAngle) + (rand() % 200) * cos(randomAngle), 0, 250 * sin(randomAngle) + (rand() % 200) * sin(randomAngle) }, 10 + rand() % 5));
 	}
 	sort(ierburi.begin(), ierburi.end(), Iarba::cmp);
 
-	cladiri.push_back(new Casa({350, 0, 0}, 120, 80, 90));
+	cladiri.push_back(new Casa({ 350, 0, 0 }, 120, 80, 90));
 	cladiri.push_back(new Casa({ -300, 0, 300 }, 160, 100, 30));
 	cladiri.push_back(new Casa({ -350, 0, -300 }, 120, 100, 90));
 	cladiri.push_back(new Casa({ -350, 0, 0 }, 100, 60, 0));
 	cladiri.push_back(new Casa({ 100, 0, 350 }, 120, 100, 0));
 	cladiri.push_back(new Casa({ 200, 0, -350 }, 120, 100, 0));
 	cladiri.push_back(new Casa({ -120, 0, -380 }, 120, 100, 0));
+	barca = new Barca({100, 0, -150});
 }
 
 
@@ -153,7 +156,8 @@ void renderScene(void) {
 	pamant->render();
 	
 	soare->render();
-	
+
+	barca->render();
 	for (int i = 0; i < pesti.size(); i++)
 	{
 		pesti[i]->render();
