@@ -163,7 +163,7 @@ public:
 
 
 		glf step = 0.001;
-		int latestEdge = 1;
+		int latestEdge = 4;
 
 		vec3 firstPoint = lakeSpline->GetInterpolatedSplinePoint(0.02), lastPoint;
 
