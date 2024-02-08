@@ -9,5 +9,5 @@ The project consists of a 3D scene built with OpenGl and Glut in C++, and has th
 
 # An image with the scene:
 <p align="center">
- <img src="https://raw.githubusercontent.com/surdubob/ComputerGraphics-3D Project/master/Images/scene1.png" width="60%">
+ <img src="https://raw.githubusercontent.com/surdubob/ComputerGraphics-3D-Project/master/Images/scene1.png" width="80%">
 </p>
